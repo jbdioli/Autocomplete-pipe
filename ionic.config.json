@@ -1,0 +1,7 @@
+{
+  "name": "Autocomplete-pipe",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
