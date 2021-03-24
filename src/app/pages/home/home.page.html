@@ -1,9 +1,39 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>home</ion-title>
+    <ion-title>ionic autocomplete with pipe</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+
+  <form [formGroup]="form" (ngSubmit)="onSave()">
+    <h1>Select your place</h1>
+    <h2>Choose your country</h2>
+    <ion-input (ionInput)="onInputCountry($event)" type="text" formControlName="country"></ion-input>
+
+    <div dirClosingAutocomplite (clickOutside)="onClosingAutocomplete()" class="div_autocomplite" [hidden]="countriesItems.length <= 0">
+      <ion-list lines="none">
+        <ion-item class="item_autocomplite" (click)="onSelectedCountry(country, form)" *ngFor="let country of countriesItems">
+          <ion-label>{{country.country}}</ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+
+
+    <h2>Select your cities</h2>
+    <ion-textarea class="div_cities" (ionInput)="onInputCities($event)" type="text" formControlName="cities"></ion-textarea>
+
+    <div dirClosingAutocomplite (clickOutside)="onClosingAutocomplete()" class="div_autocomplite" [hidden]="citiesItems.length <= 0">
+      <ion-list lines="none">
+        <ion-item class="item_autocomplite" (click)="onSelectedCities(city, form, idx)" *ngFor="let city of citiesItems, let idx=index">
+          <ion-label>{{city.city}}</ion-label>
+          <ion-checkbox slot="start" [(ngModel)]="city.isChecked" [ngModelOptions]="{standalone: true}"></ion-checkbox>
+        </ion-item>
+      </ion-list>
+    </div>
+
+
+    <ion-button expand="full" fill="outline" type="submit" [disabled]="form.invalid">Validated</ion-button>
+  </form>
 
 </ion-content>

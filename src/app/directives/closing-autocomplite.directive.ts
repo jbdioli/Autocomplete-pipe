@@ -1,10 +1,25 @@
-import { Directive } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, Renderer2 } from '@angular/core';
 
 @Directive({
-  selector: '[appClosingAutocomplite]'
+  selector: '[dirClosingAutocomplite]'
 })
-export class ClosingAutocompliteDirective {
+export class ClosingAutocompliteDirective implements OnInit {
+  @Output() public clickOutside = new EventEmitter();
 
-  constructor() { }
+  constructor(
+    private elRef: ElementRef,
+    private renderer: Renderer2
+  ) {}
 
+  ngOnInit() {
+  }
+
+
+  @HostListener('document:click', ['$event.target'])
+  public onClick(targetElement) {
+      const isClickedInside = this.elRef.nativeElement.contains(targetElement);
+      if (!isClickedInside) {
+          this.clickOutside.emit(null);
+      }
+  }
 }
