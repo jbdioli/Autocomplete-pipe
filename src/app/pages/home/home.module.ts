@@ -8,6 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { DirectivesModule } from 'src/app/directives/directives.module';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { DirectivesModule } from 'src/app/directives/directives.module';
     ReactiveFormsModule,
     IonicModule,
     HomePageRoutingModule,
-    DirectivesModule
+    DirectivesModule,
+    PipesModule
   ],
   declarations: [HomePage]
 })
