@@ -24,11 +24,11 @@ ion-input {
   background: #ffffffbf;
 }
 
-.item_autocomplite {
-  --color: #83b7c0;
+.item_autocomplete {
+  --color: #060707;
 }
 
-.item_autocomplite.item:hover {
+.item_autocomplete.item:hover {
   --ion-background-color: #398697; // don't works well
 }
 
@@ -40,7 +40,7 @@ ion-textarea {
   --background: #ffffffbf;
 }
 
-.div_autocomplite {
+.div_autocomplete {
   position: absolute;
   z-index: 1;
   width: auto;
