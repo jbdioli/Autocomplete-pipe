@@ -11,11 +11,11 @@ export class CitiesFilterPipe implements PipeTransform {
 
     text = text.toLowerCase();
     text = this.findItem(text);
-    console.log('Filter text cities : ', text);
-    // console.log('Filter cities : ', cities);
+    // console.log('Filter text cities : ', text);
+    console.log('Filter cities : ', cities);
 
     return cities.filter( (city) => {
-      console.log('retrun value', city.city.toLowerCase().includes(text));
+      // console.log('retrun value', city.city.toLowerCase().includes(text));
       return city.city.toLowerCase().includes(text);
     });
   }
