@@ -25,10 +25,11 @@ export class HomePage implements OnInit, OnDestroy {
   countries: CountryModel[];
   cities: CityModel[];
   citiesSaved: CityModel[] = [];
+  citiesItem: CityModel[] = [];
+  citiesBox: CityModel[] = [];
 
   isCityChecked: boolean;
   isCountryBox = false;
-  isCityBox = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -45,7 +46,8 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     this.citySub = this.storage.getCities$.subscribe((elmmt: CityModel[]) => {
-      this.cities = elmmt;
+      this.cities = [...elmmt];
+      this.citiesBox = [...elmmt];
     });
   }
 
@@ -80,10 +82,13 @@ export class HomePage implements OnInit, OnDestroy {
     const cities: string = ev.target.value;
 
     if (cities.length <= 0) {       // Undisplay selection box
-      this.isCityBox = false;
+      this.citiesItem = [];
       return;
     }
-    this.isCityBox = true;
+    this.citiesItem = [...this.cities];
+    this.citiesBox = [...this.cities];
+    // console.log('Object Cities :', this.cities);
+
 
     city = this.findLastCity(cities);
 
@@ -93,6 +98,7 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     this.setIsChecked(cities);
+
   }
 
   onSelectedCities(item: CityModel, form: FormGroup, index: number) {
@@ -115,12 +121,16 @@ export class HomePage implements OnInit, OnDestroy {
 
     form.patchValue({cities});
     this.citiesSaved.push({id: item.id, city: item.city, isChecked: item.isChecked});
-    // this.isCityBox = false;
+    this.citiesItem = [];
   }
 
   onClosingAutocomplete() {
     this.isCountryBox = false;
-    this.isCityBox = false;
+
+    if ( this.citiesItem.length > 0) {
+      this.citiesItem = [];
+      return;
+    }
   }
 
   onFilterCountries() {
@@ -150,6 +160,12 @@ export class HomePage implements OnInit, OnDestroy {
     return city;
   }
 
+  // setIsChecked(city: string) {
+  //   this.citiesItem = this.cities.filter(elmnt => elmnt.city.toLocaleLowerCase().includes(city.toLocaleLowerCase()));
+  //   if (this.citiesItem.length === 1 && this.citiesItem[0].city.includes(city)) {
+  //     this.citiesItem[0].isChecked = true;
+  //   }
+  // }
 
   setIsChecked(city: string) {
     this.cities = this.cities.filter(elmnt => elmnt.city.toLocaleLowerCase().includes(city.toLocaleLowerCase()));
@@ -158,8 +174,19 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  onSave() {
+  findIdCountry(country: string): number {
+     const buffer: CountryModel = this.countries.find(countryElmt => countryElmt.country === country);
 
+     if (buffer) {
+       return buffer.id;
+     }
+
+     return null;
+  }
+
+  onSave() {
+    const idCountries = this.findIdCountry(this.form.value.country);
+    this.form.value.idCountries = idCountries;
     console.log('Form : ', this.form.value);
     console.log('citiesSaved object', this.citiesSaved);
   }
