@@ -101,6 +101,7 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     this.setIsChecked(cities);
+    console.log('isCityBox : ', this.isCityBox);
 
   }
 
@@ -125,14 +126,13 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     form.patchValue({cities});
-    // this.isCityBox = false;
   }
 
 
 
   onClosingAutocomplete() {
     this.isCountryBox = false;
-    this.isCityBox = false;
+    // this.isCityBox = false;
   }
 
 
