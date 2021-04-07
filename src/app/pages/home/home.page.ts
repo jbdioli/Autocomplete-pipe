@@ -24,12 +24,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   countries: CountryModel[];
   cities: CityModel[];
-  citiesSaved: CityModel[] = [];
-  citiesItem: CityModel[] = [];
-  citiesBox: CityModel[] = [];
 
   isCityChecked: boolean;
   isCountryBox = false;
+  isCityBox = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -46,8 +44,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     this.citySub = this.storage.getCities$.subscribe((elmmt: CityModel[]) => {
-      this.cities = [...elmmt];
-      this.citiesBox = [...elmmt];
+      this.cities = elmmt;
     });
   }
 
@@ -78,18 +75,16 @@ export class HomePage implements OnInit, OnDestroy {
 
   onInputCities(ev: any) {
     let city: ICityModel;
+    this.isCityBox = true;
 
     const cities: string = ev.target.value;
 
     if (cities.length <= 0) {       // Undisplay selection box
-      this.citiesItem = [];
+      this.isCityBox = false;
       return;
     }
-    this.citiesItem = [...this.cities];
-    this.citiesBox = [...this.cities];
-    // console.log('Object Cities :', this.cities);
 
-
+    // Find city to check it
     city = this.findLastCity(cities);
 
     if (!city.isNew) {
@@ -120,17 +115,12 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     form.patchValue({cities});
-    this.citiesSaved.push({id: item.id, city: item.city, isChecked: item.isChecked});
-    this.citiesItem = [];
+    this.isCityBox = false;
   }
 
   onClosingAutocomplete() {
     this.isCountryBox = false;
-
-    if ( this.citiesItem.length > 0) {
-      this.citiesItem = [];
-      return;
-    }
+    this.isCityBox = false;
   }
 
   onFilterCountries() {
@@ -160,13 +150,6 @@ export class HomePage implements OnInit, OnDestroy {
     return city;
   }
 
-  // setIsChecked(city: string) {
-  //   this.citiesItem = this.cities.filter(elmnt => elmnt.city.toLocaleLowerCase().includes(city.toLocaleLowerCase()));
-  //   if (this.citiesItem.length === 1 && this.citiesItem[0].city.includes(city)) {
-  //     this.citiesItem[0].isChecked = true;
-  //   }
-  // }
-
   setIsChecked(city: string) {
     this.cities = this.cities.filter(elmnt => elmnt.city.toLocaleLowerCase().includes(city.toLocaleLowerCase()));
     if (this.cities.length === 1 && this.cities[0].city.includes(city)) {
@@ -188,7 +171,6 @@ export class HomePage implements OnInit, OnDestroy {
     const idCountries = this.findIdCountry(this.form.value.country);
     this.form.value.idCountries = idCountries;
     console.log('Form : ', this.form.value);
-    console.log('citiesSaved object', this.citiesSaved);
   }
 
 

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CountryFilterPipe } from './country-filter.pipe';
-import { CityFilterPipe } from './city-filter.pipe';
 import { CitiesFilterPipe } from './cities-filter.pipe';
 
 
@@ -9,7 +8,6 @@ import { CitiesFilterPipe } from './cities-filter.pipe';
 @NgModule({
   declarations: [
     CountryFilterPipe,
-    CityFilterPipe,
     CitiesFilterPipe
   ],
   imports: [
@@ -17,7 +15,6 @@ import { CitiesFilterPipe } from './cities-filter.pipe';
   ],
   exports: [
     CountryFilterPipe,
-    CityFilterPipe,
     CitiesFilterPipe
   ]
 })

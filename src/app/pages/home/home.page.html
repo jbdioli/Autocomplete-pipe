@@ -23,9 +23,9 @@
     <h2>Select your cities</h2>
     <ion-textarea class="div_cities" (ionInput)="onInputCities($event)" type="text" formControlName="cities"></ion-textarea>
 
-    <div dirClosingAutocomplite (clickOutside)="onClosingAutocomplete()" class="div_autocomplete" [hidden]="citiesItem.length <= 0">
+      <div dirClosingAutocomplite (clickOutside)="onClosingAutocomplete()" class="div_autocomplete" [hidden]="!isCityBox">
       <ion-list lines="none">
-        <ion-item class="item_autocomplete" (click)="onSelectedCities(city, form, idx)" *ngFor="let city of citiesBox | citiesFilter: onFilterCities(), let idx=index">
+        <ion-item class="item_autocomplete" (click)="onSelectedCities(city, form, idx)" *ngFor="let city of cities | citiesFilter: onFilterCities(), let idx=index">
           <ion-label>{{city.city}}</ion-label>
           <ion-checkbox slot="start" [(ngModel)]="city.isChecked" [ngModelOptions]="{standalone: true}"></ion-checkbox>
         </ion-item>
@@ -37,12 +37,3 @@
   </form>
 
 </ion-content>
-
-
-<!-- <div dirClosingAutocomplite (clickOutside)="onClosingAutocomplete()" class="div_autocomplite" [hidden]="countriesItems.length <= 0">
-  <ion-list lines="none">
-    <ion-item class="item_autocomplite" (click)="onSelectedCountry(country, form)" *ngFor="let country of countriesItems | countryFilter: onFilterCountries()">
-      <ion-label>{{country.country}}</ion-label>
-    </ion-item>
-  </ion-list>
-</div> -->
