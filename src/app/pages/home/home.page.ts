@@ -48,6 +48,8 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
+
+
   initForm() {
     this.form = this.formBuilder.group({
       country: ['', Validators.required],
@@ -56,6 +58,8 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
   }
+
+
 
   onInputCountry(ev: any) {
     const value: string = ev.target.value;
@@ -68,10 +72,14 @@ export class HomePage implements OnInit, OnDestroy {
     this.isCountryBox = true;
   }
 
+
+
   onSelectedCountry(item: CountryModel, form: FormGroup) {
     form.patchValue({country: item.country, idCountries: item.id});
     this.isCountryBox = false;
   }
+
+
 
   onInputCities(ev: any) {
     let city: ICityModel;
@@ -96,7 +104,9 @@ export class HomePage implements OnInit, OnDestroy {
 
   }
 
-  onSelectedCities(item: CityModel, form: FormGroup, index: number) {
+
+
+  onSelectedCities(item: CityModel, form: FormGroup) {
     let lastCity: ICityModel;
     let buffer: string = form.value.cities;
 
@@ -115,17 +125,23 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     form.patchValue({cities});
-    this.isCityBox = false;
+    // this.isCityBox = false;
   }
+
+
 
   onClosingAutocomplete() {
     this.isCountryBox = false;
     this.isCityBox = false;
   }
 
+
+
   onFilterCountries() {
     return this.form.value.country;
   }
+
+
 
   onFilterCities() {
     return this.form.value.cities;
@@ -150,12 +166,16 @@ export class HomePage implements OnInit, OnDestroy {
     return city;
   }
 
+
+
   setIsChecked(city: string) {
     this.cities = this.cities.filter(elmnt => elmnt.city.toLocaleLowerCase().includes(city.toLocaleLowerCase()));
     if (this.cities.length === 1 && this.cities[0].city.includes(city)) {
       this.cities[0].isChecked = true;
     }
   }
+
+
 
   findIdCountry(country: string): number {
      const buffer: CountryModel = this.countries.find(countryElmt => countryElmt.country === country);
@@ -167,11 +187,14 @@ export class HomePage implements OnInit, OnDestroy {
      return null;
   }
 
+
+
   onSave() {
     const idCountries = this.findIdCountry(this.form.value.country);
     this.form.value.idCountries = idCountries;
     console.log('Form : ', this.form.value);
   }
+
 
 
   ngOnDestroy(): void {

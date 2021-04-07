@@ -10,18 +10,19 @@ export class CitiesFilterPipe implements PipeTransform {
     if (text.length === 0) { return cities; }
 
     text = text.toLowerCase();
-    text = this.findItem(text);
-    // console.log('Filter text cities : ', text);
-    console.log('Filter cities : ', cities);
+    text = this.findCity(text);
+
+    // console.log('City text in filter : ', text);
+    console.log('Cities list in filter : ', cities);
 
     return cities.filter( (city) => {
-      // console.log('retrun value', city.city.toLowerCase().includes(text));
+      // console.log('retrun value from cities filter', city.city.toLowerCase().includes(text));
       return city.city.toLowerCase().includes(text);
     });
   }
 
 
-  findItem(item: string): string {
+  findCity(item: string): string {
     let returnValue: string =  null;
 
     const position = item.lastIndexOf(',');

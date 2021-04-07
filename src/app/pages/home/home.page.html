@@ -25,7 +25,7 @@
 
       <div dirClosingAutocomplite (clickOutside)="onClosingAutocomplete()" class="div_autocomplete" [hidden]="!isCityBox">
       <ion-list lines="none">
-        <ion-item class="item_autocomplete" (click)="onSelectedCities(city, form, idx)" *ngFor="let city of cities | citiesFilter: onFilterCities(), let idx=index">
+        <ion-item class="item_autocomplete" (click)="onSelectedCities(city, form)" *ngFor="let city of cities | citiesFilter: onFilterCities()">
           <ion-label>{{city.city}}</ion-label>
           <ion-checkbox slot="start" [(ngModel)]="city.isChecked" [ngModelOptions]="{standalone: true}"></ion-checkbox>
         </ion-item>
