@@ -10,6 +10,7 @@ export class CountryFilterPipe implements PipeTransform {
     if (text.length === 0) { return countries; }
 
     text = text.toLowerCase();
+    // console.log('Country list in filter : ', countries);
 
     return countries.filter( (country) => {
       return country.country.toLowerCase().includes(text);

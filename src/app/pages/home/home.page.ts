@@ -8,7 +8,9 @@ import { CoreStorageService } from 'src/app/services/core-storage.service';
 interface ICityModel {
   id: number;
   city: string;
-  isNew: boolean;
+  cities: string;
+  isFirstCity: boolean;
+  citiesList: string[];
 }
 
 @Component({
@@ -82,26 +84,27 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   onInputCities(ev: any) {
-    let city: ICityModel;
-    this.isCityBox = true;
-
     const cities: string = ev.target.value;
+    let buffer: ICityModel;
 
     if (cities.length <= 0) {       // Undisplay selection box
       this.isCityBox = false;
       return;
     }
 
-    // Find city to check it
-    city = this.findLastCity(cities);
+    this.isCityBox = true;
 
-    if (!city.isNew) {
-      this.setIsChecked(city.city);
-      return;
-    }
+    buffer = this.reformatCitiesString(cities);
 
-    this.setIsChecked(cities);
-    console.log('isCityBox : ', this.isCityBox);
+    this.setIsChecked(buffer.citiesList);
+
+    // if (!city.isNew) {
+    //   this.setIsChecked(city.city);
+    //   return;
+    // }
+
+    // this.setIsChecked(cities);
+    // console.log('isCityBox : ', this.isCityBox);
 
   }
 
@@ -111,13 +114,13 @@ export class HomePage implements OnInit, OnDestroy {
     let lastCity: ICityModel;
     let buffer: string = form.value.cities;
 
-    lastCity = this.findLastCity(buffer);
+    // lastCity = this.findLastCity(buffer);
 
     const lastChat = buffer.slice(buffer.length - 1);
 
     let cities: string;
     if (item.city.length > 0 && lastChat !== ',') {
-      if (!lastCity.isNew) {
+      if (!lastCity.isFirstCity) {
         buffer = buffer.slice(0, (buffer.length - lastCity.city.length) - 1);
         cities = buffer + ' ' + item.city;
       } else {
@@ -148,31 +151,72 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
-  findLastCity(cities: string): ICityModel {
-    const city: ICityModel = {id: null, city: '', isNew: false};
+  reformatCitiesString(cities: string): ICityModel {
+    const city: ICityModel = {id: null, city: '', cities: '', isFirstCity: false, citiesList: []};
+
+    // const space = '\xa0';
+    const space = ' ';
 
     const position = cities.lastIndexOf(',');
+
     if (position > -1) {
       const c: string = cities.slice(position + 1, position + 2);
+      // console.log('object c : ', c);
       if (c.includes(' ')) {
         city.city = cities.slice(position + 2);
-      } else {
+        city.cities = cities;
+      } else if (c === '') {
         city.city = cities.slice(position + 1);
+        city.cities = cities;
+        city.isFirstCity = true;
+      } else {
+        city.cities = [cities.slice(0, position + 1), space, cities.slice(position + 1)].join('');
       }
     } else if (position === -1) {
       city.city = cities;
-      city.isNew = true;
+      city.isFirstCity = true;
     }
+
+    if (city.isFirstCity) {
+      city.citiesList = city.cities.toLocaleLowerCase().split(',');
+    } else {
+      city.citiesList = city.cities.toLocaleLowerCase().split(', ');
+    }
+
+
+    console.log('object city : ', city);
     return city;
   }
 
 
 
-  setIsChecked(city: string) {
-    this.cities = this.cities.filter(elmnt => elmnt.city.toLocaleLowerCase().includes(city.toLocaleLowerCase()));
-    if (this.cities.length === 1 && this.cities[0].city.includes(city)) {
-      this.cities[0].isChecked = true;
-    }
+  // setIsChecked(city: string) {
+  //   const index: number = this.cities.findIndex(elmnt => elmnt.city.toLocaleLowerCase().match('^' + city.toLocaleLowerCase() + '$'));
+  //   if (index !== -1) {
+  //     this.cities[index].isChecked = true;
+  //   }
+  // }
+
+  setIsChecked(cities: string[]) {
+
+    cities.forEach(city => {
+      const citiesFound = this.cities.find(elmnt => elmnt.city.toLocaleLowerCase().match('^' + city.toLocaleLowerCase() + '$'));
+      if (citiesFound === undefined) {
+        // console.log('city not found', city);
+      }
+    });
+
+    this.cities.forEach((elmnt) => {
+
+      const isCity = cities.includes(elmnt.city.toLocaleLowerCase());
+      if (!isCity) {
+        elmnt.isChecked = false;
+      } else {
+        elmnt.isChecked = true;
+      }
+
+    });
+
   }
 
 
