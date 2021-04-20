@@ -98,14 +98,6 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.setIsChecked(buffer.citiesList);
 
-    // if (!city.isNew) {
-    //   this.setIsChecked(city.city);
-    //   return;
-    // }
-
-    // this.setIsChecked(cities);
-    // console.log('isCityBox : ', this.isCityBox);
-
   }
 
 
@@ -114,7 +106,7 @@ export class HomePage implements OnInit, OnDestroy {
     let lastCity: ICityModel;
     let buffer: string = form.value.cities;
 
-    // lastCity = this.findLastCity(buffer);
+    lastCity = this.reformatCitiesString(buffer);
 
     const lastChat = buffer.slice(buffer.length - 1);
 
@@ -129,6 +121,7 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     form.patchValue({cities});
+    this.isCityBox = false;
   }
 
 
@@ -161,7 +154,6 @@ export class HomePage implements OnInit, OnDestroy {
 
     if (position > -1) {
       const c: string = cities.slice(position + 1, position + 2);
-      // console.log('object c : ', c);
       if (c.includes(' ')) {
         city.city = cities.slice(position + 2);
         city.cities = cities;
@@ -170,6 +162,7 @@ export class HomePage implements OnInit, OnDestroy {
         city.cities = cities;
         city.isFirstCity = true;
       } else {
+        city.city = cities.slice(position + 1);
         city.cities = [cities.slice(0, position + 1), space, cities.slice(position + 1)].join('');
       }
     } else if (position === -1) {
@@ -189,23 +182,16 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
-
-  // setIsChecked(city: string) {
-  //   const index: number = this.cities.findIndex(elmnt => elmnt.city.toLocaleLowerCase().match('^' + city.toLocaleLowerCase() + '$'));
-  //   if (index !== -1) {
-  //     this.cities[index].isChecked = true;
-  //   }
-  // }
-
-  setIsChecked(cities: string[]) {
-
+  checkCityExist(cities: string[]) {
     cities.forEach(city => {
       const citiesFound = this.cities.find(elmnt => elmnt.city.toLocaleLowerCase().match('^' + city.toLocaleLowerCase() + '$'));
       if (citiesFound === undefined) {
-        // console.log('city not found', city);
+        console.log('city not found', city);
       }
     });
+  }
 
+  setIsChecked(cities: string[]) {
     this.cities.forEach((elmnt) => {
 
       const isCity = cities.includes(elmnt.city.toLocaleLowerCase());
