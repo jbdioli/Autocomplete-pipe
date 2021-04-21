@@ -95,8 +95,10 @@ export class HomePage implements OnInit, OnDestroy {
     this.isCityBox = true;
 
     buffer = this.reformatCitiesString(cities);
+    console.log('object buffer : ', buffer);
 
     this.setIsChecked(buffer.citiesList);
+    console.log('object cities', this.cities);
 
   }
 
@@ -114,11 +116,17 @@ export class HomePage implements OnInit, OnDestroy {
     if (item.city.length > 0 && lastChat !== ',') {
       if (!lastCity.isFirstCity) {
         buffer = buffer.slice(0, (buffer.length - lastCity.city.length) - 1);
+
         cities = buffer + ' ' + item.city;
       } else {
         cities = item.city;
       }
     }
+
+    lastCity = this.reformatCitiesString(cities);
+    // console.log('object lasCity : ', lastCity);
+    this.setIsChecked(lastCity.citiesList);
+    // console.log('object cities', this.cities);
 
     form.patchValue({cities});
     this.isCityBox = false;
@@ -165,19 +173,23 @@ export class HomePage implements OnInit, OnDestroy {
         city.city = cities.slice(position + 1);
         city.cities = [cities.slice(0, position + 1), space, cities.slice(position + 1)].join('');
       }
+
+      if (city.isFirstCity) {
+        city.citiesList = city.cities.toLocaleLowerCase().split(',');
+      } else {
+        city.citiesList = city.cities.toLocaleLowerCase().split(', ');
+      }
+
     } else if (position === -1) {
       city.city = cities;
       city.isFirstCity = true;
-    }
-
-    if (city.isFirstCity) {
-      city.citiesList = city.cities.toLocaleLowerCase().split(',');
-    } else {
-      city.citiesList = city.cities.toLocaleLowerCase().split(', ');
+      city.citiesList.push(city.city.toLocaleLowerCase());
     }
 
 
-    console.log('object city : ', city);
+
+
+    // console.log('object city : ', city);
     return city;
   }
 
