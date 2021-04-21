@@ -105,45 +105,25 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   onSelectedCities(item: CityModel, form: FormGroup) {
-    let lastCity: ICityModel;
-    const buffer: string = form.value.cities;
+    const citiesBuffer: string = form.value.cities;
+    let cities: string;
 
+    const cityPosition: number = citiesBuffer.search(item.city);
 
-    const cities = this.addCity(item.city, buffer);
-
-
-    lastCity = this.reformatCitiesString(cities);
-    // console.log('object lasCity : ', lastCity);
-    this.setIsChecked(lastCity.citiesList);
-    // console.log('object cities', this.cities);
-
-    form.patchValue({cities});
-    this.isCityBox = false;
-  }
-
-  addCity(city: string, cities: string): string {
-    const lastCity: ICityModel = this.reformatCitiesString(cities);
-
-    const lastChar = cities.slice(cities.length - 1);
-
-    let returnCities: string;
-    if (city.length > 0 && lastChar !== ',') {
-      if (!lastCity.isFirstCity) {
-        cities = cities.slice(0, (cities.length - lastCity.city.length) - 1);
-
-        returnCities = cities + ' ' + city;
-      } else {
-        returnCities = city;
-      }
+    if (cityPosition === -1 ) {
+      cities = this.addCity(item.city, citiesBuffer);
+    } else {
+      cities = this.deleteCity(item.city, citiesBuffer);
     }
 
-    return returnCities;
+    const cityItem: ICityModel = this.reformatCitiesString(cities);
+    // console.log('object lasCity : ', lastCity);
+    this.setIsChecked(cityItem.citiesList);
+    // console.log('object cities', this.cities);
+
+    form.patchValue({cities: cityItem.cities});
+    this.isCityBox = false;
   }
-
-  deleteCity(city: string, cities: string) {
-
-  }
-
 
 
   onClosingAutocomplete() {
@@ -165,44 +145,84 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   reformatCitiesString(cities: string): ICityModel {
-    const city: ICityModel = {id: null, city: '', cities: '', isFirstCity: false, citiesList: []};
+    const city: ICityModel = {id: null, city: '', cities: '', isFirstCity: true, citiesList: []};
 
     // const space = '\xa0';
     const space = ' ';
 
+    // take off last comma
+    const lastChar: string = cities.charAt(cities.length - 1);
+    if ( lastChar === ',' ) {
+      cities = cities.slice(0, cities.length - 1);
+      city.isFirstCity = false;
+    } else if ( lastChar === ' ') {
+      const beforeLastChar = cities.charAt(cities.length - 2);
+
+      if (beforeLastChar === ',') {
+        cities = cities.slice(0, cities.length - 2);
+        city.isFirstCity = false;
+      }
+    }
+
+
     const position = cities.lastIndexOf(',');
 
     if (position > -1) {
+      city.isFirstCity = false;
       const c: string = cities.slice(position + 1, position + 2);
+
       if (c.includes(' ')) {
         city.city = cities.slice(position + 2);
         city.cities = cities;
-      } else if (c === '') {
-        city.city = cities.slice(position + 1);
-        city.cities = cities;
-        city.isFirstCity = true;
       } else {
         city.city = cities.slice(position + 1);
         city.cities = [cities.slice(0, position + 1), space, cities.slice(position + 1)].join('');
       }
 
-      if (city.isFirstCity) {
-        city.citiesList = city.cities.toLocaleLowerCase().split(',');
-      } else {
-        city.citiesList = city.cities.toLocaleLowerCase().split(', ');
-      }
+      city.citiesList = city.cities.toLocaleLowerCase().split(', ');
 
     } else if (position === -1) {
       city.city = cities;
-      city.isFirstCity = true;
+      city.cities = cities;
       city.citiesList.push(city.city.toLocaleLowerCase());
     }
 
-
-
-
     // console.log('object city : ', city);
     return city;
+  }
+
+  addCity(city: string, cities: string): string {
+    const lastCity: ICityModel = this.reformatCitiesString(cities);
+
+    const lastChar = cities.charAt(cities.length - 1);
+
+    let returnCities: string;
+
+    if (!lastCity.isFirstCity) {
+      // cities = cities.slice(0, (cities.length - lastCity.city.length) - 1);
+
+      returnCities = cities + city;
+    } else {
+      returnCities = city;
+    }
+
+    return returnCities;
+  }
+
+  deleteCity(city: string, cities: string): string {
+    let returnCities: string;
+
+    const position: number = cities.indexOf(city);
+    const char = cities.charAt(position + city.length);
+
+    if (char.includes(',')) {
+      returnCities = cities.replace((city + ', '), '');
+    } else {
+      returnCities = cities.replace(city, '');
+    }
+
+
+    return returnCities;
   }
 
 
