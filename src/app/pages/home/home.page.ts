@@ -106,22 +106,11 @@ export class HomePage implements OnInit, OnDestroy {
 
   onSelectedCities(item: CityModel, form: FormGroup) {
     let lastCity: ICityModel;
-    let buffer: string = form.value.cities;
+    const buffer: string = form.value.cities;
 
-    lastCity = this.reformatCitiesString(buffer);
 
-    const lastChat = buffer.slice(buffer.length - 1);
+    const cities = this.addCity(item.city, buffer);
 
-    let cities: string;
-    if (item.city.length > 0 && lastChat !== ',') {
-      if (!lastCity.isFirstCity) {
-        buffer = buffer.slice(0, (buffer.length - lastCity.city.length) - 1);
-
-        cities = buffer + ' ' + item.city;
-      } else {
-        cities = item.city;
-      }
-    }
 
     lastCity = this.reformatCitiesString(cities);
     // console.log('object lasCity : ', lastCity);
@@ -130,6 +119,29 @@ export class HomePage implements OnInit, OnDestroy {
 
     form.patchValue({cities});
     this.isCityBox = false;
+  }
+
+  addCity(city: string, cities: string): string {
+    const lastCity: ICityModel = this.reformatCitiesString(cities);
+
+    const lastChar = cities.slice(cities.length - 1);
+
+    let returnCities: string;
+    if (city.length > 0 && lastChar !== ',') {
+      if (!lastCity.isFirstCity) {
+        cities = cities.slice(0, (cities.length - lastCity.city.length) - 1);
+
+        returnCities = cities + ' ' + city;
+      } else {
+        returnCities = city;
+      }
+    }
+
+    return returnCities;
+  }
+
+  deleteCity(city: string, cities: string) {
+
   }
 
 
