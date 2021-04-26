@@ -179,7 +179,6 @@ export class HomePage implements OnInit, OnDestroy {
       } else {
         city.city = cities.slice(position + 1);
         city.cities = [cities.slice(0, position + 1), space, cities.slice(position + 1)].join('');
-        this.form.patchValue({cities: city.cities});
       }
 
       city.citiesList = city.cities.toLocaleLowerCase().split(', ');
@@ -188,13 +187,15 @@ export class HomePage implements OnInit, OnDestroy {
       city.city = cities;
       city.cities = cities;
       city.citiesList.push(city.city.toLocaleLowerCase());
-      if (lastChar === ',') {
-        this.form.patchValue({cities: city.cities + lastChar});
-      } else if (beforeLastChar === ',') {
-        this.form.patchValue({cities: city.cities + beforeLastChar + lastChar});
-      } else {
-        this.form.patchValue({cities: city.cities});
-      }
+    }
+
+
+    if (lastChar === ',') {
+      this.form.patchValue({cities: city.cities + lastChar});
+    } else if (beforeLastChar === ',') {
+      this.form.patchValue({cities: city.cities + beforeLastChar + lastChar});
+    } else {
+      this.form.patchValue({cities: city.cities});
     }
 
     // console.log('object city : ', city);
@@ -240,7 +241,7 @@ export class HomePage implements OnInit, OnDestroy {
     cities.forEach(city => {
       const citiesFound = this.cities.find(elmnt => elmnt.city.toLocaleLowerCase().match('^' + city.toLocaleLowerCase() + '$'));
       if (citiesFound === undefined) {
-        console.log('city not found', city);
+        console.log('City not found', city);
       }
     });
   }
@@ -276,6 +277,8 @@ export class HomePage implements OnInit, OnDestroy {
   onSave() {
     const idCountries = this.findIdCountry(this.form.value.country);
     this.form.value.idCountries = idCountries;
+    const cityItem: ICityModel = this.reformatCitiesString(this.form.value.cities);
+    this.checkCityExist(cityItem.citiesList);
     console.log('Form : ', this.form.value);
   }
 
