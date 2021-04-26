@@ -85,7 +85,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   onInputCities(ev: any) {
     const cities: string = ev.target.value;
-    let buffer: ICityModel;
+    let cityItem: ICityModel;
 
     if (cities.length <= 0) {       // Undisplay selection box
       this.isCityBox = false;
@@ -94,11 +94,12 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.isCityBox = true;
 
-    buffer = this.reformatCitiesString(cities);
-    console.log('object buffer : ', buffer);
+    cityItem = this.reformatCitiesString(cities);
+    // this.form.patchValue({cities: cityItem.cities});
+    // console.log('object buffer : ', buffer);
 
-    this.setIsChecked(buffer.citiesList);
-    console.log('object cities', this.cities);
+    this.setIsChecked(cityItem.citiesList);
+    // console.log('object cities', this.cities);
 
   }
 
@@ -121,14 +122,14 @@ export class HomePage implements OnInit, OnDestroy {
     this.setIsChecked(cityItem.citiesList);
     // console.log('object cities', this.cities);
 
-    form.patchValue({cities: cityItem.cities});
+    // form.patchValue({cities: cityItem.cities});
     this.isCityBox = false;
   }
 
 
   onClosingAutocomplete() {
     this.isCountryBox = false;
-    // this.isCityBox = false;
+    this.isCityBox = false;
   }
 
 
@@ -151,12 +152,13 @@ export class HomePage implements OnInit, OnDestroy {
     const space = ' ';
 
     // take off last comma
+    let beforeLastChar: string;
     const lastChar: string = cities.charAt(cities.length - 1);
     if ( lastChar === ',' ) {
       cities = cities.slice(0, cities.length - 1);
       city.isFirstCity = false;
     } else if ( lastChar === ' ') {
-      const beforeLastChar = cities.charAt(cities.length - 2);
+      beforeLastChar = cities.charAt(cities.length - 2);
 
       if (beforeLastChar === ',') {
         cities = cities.slice(0, cities.length - 2);
@@ -177,6 +179,7 @@ export class HomePage implements OnInit, OnDestroy {
       } else {
         city.city = cities.slice(position + 1);
         city.cities = [cities.slice(0, position + 1), space, cities.slice(position + 1)].join('');
+        this.form.patchValue({cities: city.cities});
       }
 
       city.citiesList = city.cities.toLocaleLowerCase().split(', ');
@@ -185,6 +188,13 @@ export class HomePage implements OnInit, OnDestroy {
       city.city = cities;
       city.cities = cities;
       city.citiesList.push(city.city.toLocaleLowerCase());
+      if (lastChar === ',') {
+        this.form.patchValue({cities: city.cities + lastChar});
+      } else if (beforeLastChar === ',') {
+        this.form.patchValue({cities: city.cities + beforeLastChar + lastChar});
+      } else {
+        this.form.patchValue({cities: city.cities});
+      }
     }
 
     // console.log('object city : ', city);
