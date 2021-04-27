@@ -72,8 +72,20 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     this.isCountryBox = true;
+
+    this.countryAutoComplete(value, ...this.countries);
+
+
   }
 
+  countryAutoComplete(country: string, ...countries: CountryModel[]) {
+    // const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match('^' + country.toLocaleLowerCase() + '$'));
+    const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match(country.toLocaleLowerCase()));
+    if (countryFound.length === 1) {
+      this.form.patchValue({country: countryFound[0].country, idCounties: countryFound[0].id});
+      this.isCountryBox = false;
+    }
+  }
 
 
   onSelectedCountry(item: CountryModel, form: FormGroup) {
