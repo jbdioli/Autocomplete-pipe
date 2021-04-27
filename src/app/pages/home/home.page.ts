@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IonInput } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { CityModel } from 'src/app/models/city.model';
 import { CountryModel } from 'src/app/models/country.model';
@@ -19,8 +20,12 @@ interface ICityModel {
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-  countrySub: Subscription;
+
+  @ViewChild('countryInput', {read: ElementRef, static: true })  countryInput: ElementRef;
+
+  Sub: Subscription;
   citySub: Subscription;
+  countrySub: Subscription;
 
   form: FormGroup;
 
@@ -65,6 +70,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   onInputCountry(ev: any) {
     const value: string = ev.target.value;
+    this.endWritingCountryInput(value, ...this.countries);
 
     if (value.length <= 0) {
       this.isCountryBox = false;
@@ -74,22 +80,25 @@ export class HomePage implements OnInit, OnDestroy {
     this.isCountryBox = true;
 
     this.countryAutoComplete(value, ...this.countries);
-
-
   }
 
   countryAutoComplete(country: string, ...countries: CountryModel[]) {
-    // const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match('^' + country.toLocaleLowerCase() + '$'));
     const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match(country.toLocaleLowerCase()));
     if (countryFound.length === 1) {
-      this.form.patchValue({country: countryFound[0].country, idCounties: countryFound[0].id});
+      this.form.patchValue({ country: countryFound[0].country, idCounties: countryFound[0].id });
       this.isCountryBox = false;
     }
   }
 
+  endWritingCountryInput(country: string, ...countries: CountryModel[]) {
+    const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match('^' + country.toLocaleLowerCase() + '$'));
+    if (countryFound.length !== 0) {
+      this.countryInput.nativeElement.maxlength = countryFound[0].country.length;;
+    }
+  }
 
   onSelectedCountry(item: CountryModel, form: FormGroup) {
-    form.patchValue({country: item.country, idCountries: item.id});
+    form.patchValue({ country: item.country, idCountries: item.id });
     this.isCountryBox = false;
   }
 
@@ -123,7 +132,7 @@ export class HomePage implements OnInit, OnDestroy {
 
     const cityPosition: number = citiesBuffer.search(item.city);
 
-    if (cityPosition === -1 ) {
+    if (cityPosition === -1) {
       cities = this.addCity(item.city, citiesBuffer);
     } else {
       cities = this.deleteCity(item.city, citiesBuffer);
@@ -158,7 +167,7 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   reformatCitiesString(cities: string): ICityModel {
-    const city: ICityModel = {id: null, city: '', cities: '', isFirstCity: true, citiesList: []};
+    const city: ICityModel = { id: null, city: '', cities: '', isFirstCity: true, citiesList: [] };
 
     // const space = '\xa0';
     const space = ' ';
@@ -166,10 +175,10 @@ export class HomePage implements OnInit, OnDestroy {
     // take off last comma
     let beforeLastChar: string;
     const lastChar: string = cities.charAt(cities.length - 1);
-    if ( lastChar === ',' ) {
+    if (lastChar === ',') {
       cities = cities.slice(0, cities.length - 1);
       city.isFirstCity = false;
-    } else if ( lastChar === ' ') {
+    } else if (lastChar === ' ') {
       beforeLastChar = cities.charAt(cities.length - 2);
 
       if (beforeLastChar === ',') {
@@ -203,11 +212,11 @@ export class HomePage implements OnInit, OnDestroy {
 
 
     if (lastChar === ',') {
-      this.form.patchValue({cities: city.cities + lastChar});
+      this.form.patchValue({ cities: city.cities + lastChar });
     } else if (beforeLastChar === ',') {
-      this.form.patchValue({cities: city.cities + beforeLastChar + lastChar});
+      this.form.patchValue({ cities: city.cities + beforeLastChar + lastChar });
     } else {
-      this.form.patchValue({cities: city.cities});
+      this.form.patchValue({ cities: city.cities });
     }
 
     // console.log('object city : ', city);
@@ -275,13 +284,13 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   findIdCountry(country: string): number {
-     const buffer: CountryModel = this.countries.find(countryElmt => countryElmt.country === country);
+    const buffer: CountryModel = this.countries.find(countryElmt => countryElmt.country === country);
 
-     if (buffer) {
-       return buffer.id;
-     }
+    if (buffer) {
+      return buffer.id;
+    }
 
-     return null;
+    return null;
   }
 
 

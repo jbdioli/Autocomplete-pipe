@@ -9,7 +9,7 @@
   <form [formGroup]="form" (ngSubmit)="onSave()">
     <h1>Select your place</h1>
     <h2>Choose your country</h2>
-    <ion-input (ionInput)="onInputCountry($event)" type="text" formControlName="country"></ion-input>
+    <ion-input (ionInput)="onInputCountry($event)" type="text" formControlName="country" #countryInput></ion-input>
 
     <div dirClosingAutocomplite (clickOutside)="onClosingAutocomplete()" class="div_autocomplete" [hidden]="!isCountryBox">
       <ion-list lines="none">
