@@ -80,20 +80,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.endWritingCountryInput(this.form.value.country, ...this.countries);
   }
 
-  countryAutoComplete(country: string, ...countries: CountryModel[]) {
-    const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match(country.toLocaleLowerCase()));
-    if (countryFound.length === 1) {
-      this.form.patchValue({ country: countryFound[0].country, idCounties: countryFound[0].id });
-      this.isCountryBox = false;
-    }
-  }
 
-  endWritingCountryInput(country: string, ...countries: CountryModel[]) {
-    const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match('^' + country.toLocaleLowerCase() + '$'));
-    if ( countryFound.length !== 0 && country.length >= countryFound[0].country.length ) {
-      this.countryInput.nativeElement.maxlength = countryFound[0].country.length;
-    }
-  }
 
   onSelectedCountry(item: CountryModel, form: FormGroup) {
     form.patchValue({ country: item.country, idCountries: item.id });
@@ -161,6 +148,22 @@ export class HomePage implements OnInit, OnDestroy {
 
   onFilterCities() {
     return this.form.value.cities;
+  }
+
+
+  countryAutoComplete(country: string, ...countries: CountryModel[]) {
+    const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match(country.toLocaleLowerCase()));
+    if (countryFound.length === 1) {
+      this.form.patchValue({ country: countryFound[0].country, idCounties: countryFound[0].id });
+      this.isCountryBox = false;
+    }
+  }
+
+  endWritingCountryInput(country: string, ...countries: CountryModel[]) {
+    const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match('^' + country.toLocaleLowerCase() + '$'));
+    if ( countryFound.length !== 0 && country.length >= countryFound[0].country.length ) {
+      this.countryInput.nativeElement.maxlength = countryFound[0].country.length;
+    }
   }
 
 
@@ -295,6 +298,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   onSave() {
     const idCountries = this.findIdCountry(this.form.value.country);
+    if (idCountries === null) {
+      console.log('Please insert a valide country');
+      return;
+    }
     this.form.value.idCountries = idCountries;
     const cityItem: ICityModel = this.reformatCitiesString(this.form.value.cities);
     this.checkCityExist(cityItem.citiesList);
