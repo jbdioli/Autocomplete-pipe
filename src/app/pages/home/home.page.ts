@@ -66,11 +66,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   }
 
-
-
   onInputCountry(ev: any) {
     const value: string = ev.target.value;
-    this.endWritingCountryInput(value, ...this.countries);
 
     if (value.length <= 0) {
       this.isCountryBox = false;
@@ -80,6 +77,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.isCountryBox = true;
 
     this.countryAutoComplete(value, ...this.countries);
+    this.endWritingCountryInput(value, ...this.countries);
   }
 
   countryAutoComplete(country: string, ...countries: CountryModel[]) {
@@ -92,8 +90,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   endWritingCountryInput(country: string, ...countries: CountryModel[]) {
     const countryFound = countries.filter(elmnt => elmnt.country.toLocaleLowerCase().match('^' + country.toLocaleLowerCase() + '$'));
-    if (countryFound.length !== 0) {
-      this.countryInput.nativeElement.maxlength = countryFound[0].country.length;;
+    if ( countryFound.length !== 0 && country.length >= countryFound[0].country.length ) {
+      this.countryInput.nativeElement.maxlength = countryFound[0].country.length;
     }
   }
 
