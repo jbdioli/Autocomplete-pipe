@@ -77,7 +77,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.isCountryBox = true;
 
     this.countryAutoComplete(value, ...this.countries);
-    this.endWritingCountryInput(value, ...this.countries);
+    this.endWritingCountryInput(this.form.value.country, ...this.countries);
   }
 
   countryAutoComplete(country: string, ...countries: CountryModel[]) {
